@@ -57,7 +57,7 @@ Dengan menggunakan interface seperti `JpaRepository`, abstraksi diterapkan untuk
 
 ## 🎥 Demo Proyek
 
-- **GitHub:** [Masukkan link GitHub di sini]  
-- **Drive/YouTube:** [Masukkan link video demo di sini]
+- **GitHub:** [https://github.com/naswamtr/UTS_PBO2_TIF-K-23A_23552011185]
+- **Drive/YouTube:** [https://drive.google.com/file/d/1pCXU1IobrpiL_rmNOz-99ABEjqB0kQ78/view?usp=sharing]
 
 ---
