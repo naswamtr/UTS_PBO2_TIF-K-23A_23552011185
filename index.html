@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>To-Do List</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #ffe6f0;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .user-info {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #d63384;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        form, .filter-links, ul {
+            max-width: 600px;
+            margin: auto;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #dba5bd;
+            border-radius: 10px;
+            margin-right: 10px;
+        }
+
+        button {
+            background-color: #f8b4d7;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #e295c8;
+        }
+
+        .filter-links {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .filter-links a {
+            text-decoration: none;
+            color: #d63384;
+            margin: 0 10px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #fff0f6;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .completed {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .todo-buttons {
+            margin-top: 10px;
+        }
+
+        .todo-buttons form,
+        .todo-buttons button {
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .edit-form {
+            margin-top: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        p {
+            text-align: center;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div class="user-info">
+    Selamat datang, <span th:text="${userUsername}">username</span>!
+</div>
+
+<h1>To-Do List</h1>
+
+<!-- Form Tambah Tugas -->
+<form th:action="@{/todos}" method="post">
+    <input type="text" name="task" required placeholder="Tugas baru...">
+    <button type="submit">Tambah</button>
+</form>
+
+<!-- Tombol Logout -->
+<form th:action="@{/todos/logout}" method="post" style="text-align:center; margin-top: 10px;">
+    <button type="submit">Logout</button>
+</form>
+
+<!-- Filter -->
+<div class="filter-links">
+    <a th:href="@{/todos}">Semua</a> |
+    <a th:href="@{/todos(status='belum')}">Belum Selesai</a> |
+    <a th:href="@{/todos(status='selesai')}">Selesai</a>
+</div>
+
+<!-- Daftar Tugas -->
+<ul>
+    <li th:each="todo : ${todos}">
+        <span th:text="${todo.task}" th:classappend="${todo.completed} ? 'completed' : ''" th:id="'task-'+${todo.id}"></span>
+
+        <!-- Form Edit -->
+        <form th:action="@{/todos/edit/{id}(id=${todo.id})}" method="post" class="edit-form hidden" th:id="'form-'+${todo.id}">
+            <input type="text" name="task" th:value="${todo.task}" />
+            <button type="submit">Simpan</button>
+        </form>
+
+        <div class="todo-buttons">
+            <form th:action="@{/todos/update/{id}(id=${todo.id})}" method="post">
+                <button type="submit">✔</button>
+            </form>
+            <form th:action="@{/todos/delete}" method="post">
+                <input type="hidden" name="id" th:value="${todo.id}" />
+                <button type="submit">❌</button>
+            </form>
+            <button type="button" th:onclick="'toggleEditForm(' + ${todo.id} + ')'">Edit</button>
+        </div>
+    </li>
+</ul>
+
+<!-- Pesan Jika Kosong -->
+<p th:if="${#lists.isEmpty(todos)}">Belum ada tugas.</p>
+
+<script>
+    function toggleEditForm(id) {
+        const form = document.getElementById('form-' + id);
+        const taskText = document.getElementById('task-' + id);
+        if (form.classList.contains('hidden')) {
+            form.classList.remove('hidden');
+            taskText.style.display = 'none';
+        } else {
+            form.classList.add('hidden');
+            taskText.style.display = '';
+        }
+    }
+</script>
+
+</body>
+</html>
